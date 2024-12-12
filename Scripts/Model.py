@@ -11,7 +11,7 @@ import streamlit as st
 
 # Build the model
 
-#@st.cache_data
+@st.cache_data
 def load_data():
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -19,7 +19,7 @@ def load_data():
     data = pd.read_csv(dataset_path)
     return  data
 
-#@st.cache_data
+@st.cache_data
 def load_train_test():
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -59,33 +59,18 @@ def build_model(X_train):
 
 # Train the model
 
-model = build_model(X_train)
-
-#@st.cache_data
 def train_model(model, X_train, y_train, X_test, y_test):
     early_stopping = EarlyStopping(patience=150, restore_best_weights=True)
-
-    # # Set up progress bar
-    # progress_bar = st.progress(0)
-
-    # Initialize total epochs
-    total_epochs = 350
-    batch_size = 2000
 
     # Training the model
     model.fit(
         X_train,
         y_train,
         validation_data=(X_test, y_test),
-        epochs=total_epochs,
-        batch_size=batch_size,
+        epochs=350,
+        batch_size=2000,
         callbacks=[early_stopping],
         verbose=1
     )
 
-    # # Update the progress bar at each epoch
-    # for epoch in range(total_epochs):
-    #     progress_bar.progress((epoch + 1) / total_epochs)
-
-    # Return the trained model
     return model
