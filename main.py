@@ -27,27 +27,18 @@ with col1:
     # User inputs
 
     zip_code = st.selectbox("Select Zip Code", options=X_train['Zip Code'].sort_values(ascending=True).unique())
-
     prop_type = st.selectbox("Select Type of Property", options=X_train['Subtype of Property'].unique())
-    
     building_states = ['To restore', 'To renovate', 'To be done up', 'Good', 'Just renovated', 'As new']
     building_state_index = st.selectbox("Select State of the Building", options=range(len(building_states)), format_func=lambda x: building_states[x])
     building_score = building_state_index
-
     livable_space_score = st.number_input("Enter Livable Space (m2)", min_value=0.0, step=10.0)
-
     rooms_score = st.number_input("Enter Number of Rooms", min_value=0.0, step=1.0)
-
     facades_score = st.number_input("Enter Number of Facades", min_value=0.0, step=1.0)
-
     PEB_rankings = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
     PEB_index = st.selectbox("Select PEB", options=range(len(PEB_rankings)), format_func=lambda x: PEB_rankings[x])
     PEB_score = PEB_index
-
     energy_consumption_score = st.number_input("Enter Primary Energy Consumption (kWh/m2)", min_value=0.0, step=10.0)
-
     land_surface_score = st.number_input("Enter Surface of the Land (m2)", min_value=0.0, step=10.0)
-
     construction_year_score = st.number_input("Enter Construction Year", min_value=0.0, step=1.0)
 
     if st.button("Predict Price"):
@@ -55,13 +46,9 @@ with col1:
         # Calculate scores for inputs
 
         median_revenue_score = X_train.loc[X_train['Zip Code'] == zip_code, 'Median Revenue per Commune'].mean()
-
         median_price_score = X_train.loc[X_train['Zip Code'] == zip_code, 'Median Price per Commune'].mean()
-
         prop_type_score = X_train.loc[X_train['Subtype of Property'] == prop_type, 'Median Revenue per Commune'].mean()
-
         PEB_type_score = X_train.loc[X_train['PEB'] == PEB_score, 'Median Revenue per Commune'].mean()
- 
         building_state_type_score = X_train.loc[X_train['State of the Building'] == building_score, 'Median Revenue per Commune'].mean()
         
         # Standardize Inputs
