@@ -1,6 +1,6 @@
 import streamlit as st
-from Scripts.Map import *
-from Scripts.Model import *
+from App.Scripts.Map import *
+from App.Scripts.Load import *
 from tensorflow.keras.models import load_model
 from keras import metrics
 from tensorflow.keras.utils import get_custom_objects
@@ -9,16 +9,13 @@ from tensorflow.keras.utils import get_custom_objects
 
 st.set_page_config(page_title="Immo Belgium App", page_icon="🏠", layout="wide")
 st.markdown("<h1 style='text-align: center;'>Immo Belgium App</h1>", unsafe_allow_html=True)
+col1, col2 = st.columns([0.3, 0.7])
 
 # Load the datasets using the cached function
 
 _df = load_geo()
 data = load_data()
 X_train, X_test, y_train, y_test = load_train_test()
-
-# Set Streamlit Interface Frame with columns
-
-col1, col2 = st.columns([0.3, 0.7])
 
 # Display Prediction Model in column 1
 
@@ -28,18 +25,18 @@ with col1:
 
     zip_code = st.selectbox("Select Zip Code", options=X_train['Zip Code'].sort_values(ascending=True).unique())
     prop_type = st.selectbox("Select Type of Property", options=X_train['Subtype of Property'].unique())
+    livable_space_score = st.number_input("Enter Livable Space (m2)", min_value=0, step=10)
+    land_surface_score = st.number_input("Enter Surface of the Land (m2)", min_value=0, step=10)
+    energy_consumption_score = st.number_input("Enter Primary Energy Consumption (kWh/m2)", min_value=0, step=10)
+    construction_year_score = st.number_input("Enter Construction Year", min_value=1750, step=10)
+    facades_score = st.number_input("Enter Number of Facades", min_value=0, step=1, max_value=4)
+    rooms_score = st.number_input("Enter Number of Rooms", min_value=0, step=1, max_value=20)
     building_states = ['To restore', 'To renovate', 'To be done up', 'Good', 'Just renovated', 'As new']
     building_state_index = st.selectbox("Select State of the Building", options=range(len(building_states)), format_func=lambda x: building_states[x])
     building_score = building_state_index
-    livable_space_score = st.number_input("Enter Livable Space (m2)", min_value=0.0, step=10.0)
-    rooms_score = st.number_input("Enter Number of Rooms", min_value=0.0, step=1.0)
-    facades_score = st.number_input("Enter Number of Facades", min_value=0.0, step=1.0)
-    PEB_rankings = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    PEB_rankings = ['G', 'F', 'E', 'D', 'C', 'B', 'A']
     PEB_index = st.selectbox("Select PEB", options=range(len(PEB_rankings)), format_func=lambda x: PEB_rankings[x])
     PEB_score = PEB_index
-    energy_consumption_score = st.number_input("Enter Primary Energy Consumption (kWh/m2)", min_value=0.0, step=10.0)
-    land_surface_score = st.number_input("Enter Surface of the Land (m2)", min_value=0.0, step=10.0)
-    construction_year_score = st.number_input("Enter Construction Year", min_value=0.0, step=1.0)
 
     if st.button("Predict Price"):
 
@@ -77,14 +74,37 @@ with col1:
         # Load model
         
         get_custom_objects().update({'mae': metrics.mean_absolute_error})
-        trained_model = load_model('data/trained_model.h5')
+        trained_model = load_model('App/data/trained_model.h5')
         
         # Predict using the trained model
         predicted_price = trained_model.predict(final_features)[0]
         predicted_price_value = predicted_price.item()
 
         # Display the prediction
-        st.write(f"### Predicted Price: €{predicted_price_value:,.2f}")
+
+        custom_css = """
+        <style>
+            .predicted-price {
+                font-size: 2rem; /* Increase the font size */
+                font-weight: bold; /* Make the text bold */
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+                border: 2px solid #4CAF50; /* Add a border */
+                padding: 10px; /* Add some padding */
+                border-radius: 10px; /* Round the corners */
+                background-color: #333346; /* Set a light green background */
+                display: inline-block; /* Inline styling */
+            }
+        </style>
+        """
+
+        # Inject CSS into the app
+        st.markdown(custom_css, unsafe_allow_html=True)
+
+        # Display the predicted price with custom styling
+        st.markdown(
+            f"<div class='predicted-price'>Predicted Price: €{predicted_price_value:,.2f}</div>",
+            unsafe_allow_html=True,
+        )
 
 # Display Map & Dataset in column 2 for interactivity
 
