@@ -81,7 +81,8 @@ def display_map(_df):
         geojson_layer = layer(_df, branca_cmap)
         geojson_layer.add_child(
             folium.GeoJsonPopup(
-                fields=["mun_name_fr", "Zip Code", "mean_price_by_locality"]
+                fields=["mun_name_fr", "Zip Code", "mean_price_by_locality"],
+                aliases=["Commune", "Post Code", "Median Price/m2 per Commune"]
             )
         )
         geojson_layer.add_to(map)
