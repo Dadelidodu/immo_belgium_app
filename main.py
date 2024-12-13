@@ -31,10 +31,10 @@ with col1:
     construction_year_score = st.number_input("Enter Construction Year", min_value=1750, step=10)
     facades_score = st.number_input("Enter Number of Facades", min_value=0, step=1, max_value=4)
     rooms_score = st.number_input("Enter Number of Rooms", min_value=0, step=1, max_value=20)
-    building_states = ['To restore', 'To renovate', 'To be done up', 'Good', 'Just renovated', 'As new']
+    building_states = ['As new','Just renovated','Good','To be done up','To renovate', 'To restore']
     building_state_index = st.selectbox("Select State of the Building", options=range(len(building_states)), format_func=lambda x: building_states[x])
     building_score = building_state_index
-    PEB_rankings = ['G', 'F', 'E', 'D', 'C', 'B', 'A']
+    PEB_rankings = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
     PEB_index = st.selectbox("Select PEB", options=range(len(PEB_rankings)), format_func=lambda x: PEB_rankings[x])
     PEB_score = PEB_index
 
