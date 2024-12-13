@@ -42,11 +42,11 @@ The app is deployed on Streamlit and can be accessed directly here: https://immo
 
 Example Interface
 
-![alt text](assets/map.jpG)
+![alt text](App/assets/map.jpg)
 
 Sample Prediction Output
 
-![alt text](assets/prediction.jpg)
+![alt text](App/assets/prediction.jpg)
 
 
 ## Contributors
