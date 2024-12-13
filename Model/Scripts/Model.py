@@ -9,24 +9,29 @@ import shap
 
 # Build the model
 
+
 def build_model(X_train):
 
-    model = Sequential([
-    Input(shape=(X_train.shape[1],)),
-    Dense(256, activation='relu', kernel_regularizer=l2(0.05)),
-    Dense(128, activation='relu', kernel_regularizer=l2(0.05)),
-    Dense(64, activation='relu', kernel_regularizer=l2(0.05)),
-    Dense(32, activation='relu', kernel_regularizer=l2(0.05)),
-    Dense(16, activation='relu', kernel_regularizer=l2(0.05)),
-    Dense(1)]
+    model = Sequential(
+        [
+            Input(shape=(X_train.shape[1],)),
+            Dense(256, activation="relu", kernel_regularizer=l2(0.05)),
+            Dense(128, activation="relu", kernel_regularizer=l2(0.05)),
+            Dense(64, activation="relu", kernel_regularizer=l2(0.05)),
+            Dense(32, activation="relu", kernel_regularizer=l2(0.05)),
+            Dense(16, activation="relu", kernel_regularizer=l2(0.05)),
+            Dense(1),
+        ]
     )
-    
+
     optimizer = Adam(learning_rate=10**-1.8)
-    model.compile(optimizer=optimizer, loss='mae', metrics=['mae'])
+    model.compile(optimizer=optimizer, loss="mae", metrics=["mae"])
 
     return model
 
+
 # Train the model
+
 
 def train_model(model, X_train, y_train, X_test, y_test):
 
@@ -39,16 +44,19 @@ def train_model(model, X_train, y_train, X_test, y_test):
         epochs=350,
         batch_size=2000,
         callbacks=[early_stopping],
-        verbose=1)
+        verbose=1,
+    )
 
     return trained_model
 
+
 # SHAP ANALYSIS
+
 
 def shap_analysis(X_train, X_test, model):
 
     background = shap.sample(X_train, 100)
-    X_test_sample = shap.sample(X_test, 100)  
+    X_test_sample = shap.sample(X_test, 100)
     explainer = shap.KernelExplainer(model.predict, background)
     shap_values = explainer.shap_values(X_test_sample, nsamples=100)
 

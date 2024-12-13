@@ -18,7 +18,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 # Read the CSV file into a DataFrame
 script_dir = os.path.dirname(os.path.abspath(__file__))
-scraping_dataset_path = os.path.join(script_dir, 'data/scraping_data.csv')
+scraping_dataset_path = os.path.join(script_dir, "data/scraping_data.csv")
 df = pd.read_csv(scraping_dataset_path)
 
 # Cleaning dataset
@@ -54,19 +54,31 @@ test_r2 = r2_score(y_test, y_test_pred)
 train_rmse = np.sqrt(mean_squared_error(y_train, y_train_pred))
 test_rmse = np.sqrt(mean_squared_error(y_test, y_test_pred))
 
+
 # MAPE (Mean Absolute Percentage Error) with zero check
 def calculate_mape(y_true, y_pred):
     non_zero_indices = y_true != 0
-    return np.mean(np.abs((y_true[non_zero_indices] - y_pred[non_zero_indices]) / y_true[non_zero_indices])) * 100
+    return (
+        np.mean(
+            np.abs(
+                (y_true[non_zero_indices] - y_pred[non_zero_indices])
+                / y_true[non_zero_indices]
+            )
+        )
+        * 100
+    )
+
 
 train_mape = calculate_mape(y_train, y_train_pred)
 test_mape = calculate_mape(y_test, y_test_pred)
+
 
 # sMAPE (Symmetric Mean Absolute Percentage Error) with zero check
 def calculate_smape(y_true, y_pred):
     denominator = np.abs(y_true) + np.abs(y_pred)
     denominator[denominator == 0] = 1  # Avoid division by zero
     return np.mean(2 * np.abs(y_pred - y_true) / denominator) * 100
+
 
 train_smape = calculate_smape(y_train, y_train_pred)
 test_smape = calculate_smape(y_test, y_test_pred)
@@ -85,21 +97,23 @@ inference_time = end_inference_time - start_inference_time
 
 # Print results
 print("Training MAE (from model):", train_mae)
-print("Test MAE (from model):", test_mae,'\n')
+print("Test MAE (from model):", test_mae, "\n")
 print("Training R²:", train_r2)
-print("Test R²:", test_r2,'\n')
+print("Test R²:", test_r2, "\n")
 print("Training RMSE:", train_rmse)
-print("Test RMSE:", test_rmse,'\n')
+print("Test RMSE:", test_rmse, "\n")
 print("Training MAPE:", train_mape)
-print("Test MAPE:", test_mape,'\n')
+print("Test MAPE:", test_mape, "\n")
 print("Training sMAPE:", train_smape)
-print("Test sMAPE:", test_smape,'\n')
+print("Test sMAPE:", test_smape, "\n")
 print(f"Training Time: {training_time:.2f} seconds")
-print(f"Single Prediction Time: {inference_time:.2f} seconds",'\n')
+print(f"Single Prediction Time: {inference_time:.2f} seconds", "\n")
 
 # SHAP Analysis
 
-background, X_test_sample, explainer, shap_values = shap_analysis(X_train, X_test, model)
+background, X_test_sample, explainer, shap_values = shap_analysis(
+    X_train, X_test, model
+)
 
 # Plot SHAP values results
 
@@ -116,30 +130,71 @@ plt.show()
 # Plot training loss results
 
 plt.figure(figsize=(12, 6))
-plt.plot(trained_model.history['loss'][15:], label='Training Loss', color='blue', linestyle='-', linewidth=2)
-plt.plot(trained_model.history['val_loss'][15:], label='Test Loss', color='orange', linestyle='--', linewidth=2)
-plt.scatter(range(len(trained_model.history['loss'][15:])), trained_model.history['loss'][15:], color='blue', s=10, alpha=0.6)
-plt.scatter(range(len(trained_model.history['val_loss'][15:])), trained_model.history['val_loss'][15:], color='orange', s=10, alpha=0.6)
+plt.plot(
+    trained_model.history["loss"][15:],
+    label="Training Loss",
+    color="blue",
+    linestyle="-",
+    linewidth=2,
+)
+plt.plot(
+    trained_model.history["val_loss"][15:],
+    label="Test Loss",
+    color="orange",
+    linestyle="--",
+    linewidth=2,
+)
+plt.scatter(
+    range(len(trained_model.history["loss"][15:])),
+    trained_model.history["loss"][15:],
+    color="blue",
+    s=10,
+    alpha=0.6,
+)
+plt.scatter(
+    range(len(trained_model.history["val_loss"][15:])),
+    trained_model.history["val_loss"][15:],
+    color="orange",
+    s=10,
+    alpha=0.6,
+)
 
-plt.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
-plt.xlabel('Epochs (Starting from 10)', fontsize=12, fontweight='bold')
-plt.ylabel('Mean Squared Error', fontsize=12, fontweight='bold')
-plt.title('Training vs. Validation Loss Over Epochs', fontsize=16, fontweight='bold')
+plt.grid(color="gray", linestyle="--", linewidth=0.5, alpha=0.7)
+plt.xlabel("Epochs (Starting from 10)", fontsize=12, fontweight="bold")
+plt.ylabel("Mean Squared Error", fontsize=12, fontweight="bold")
+plt.title("Training vs. Validation Loss Over Epochs", fontsize=16, fontweight="bold")
 
-plt.legend(loc='upper right', fontsize=10, frameon=True, shadow=True, borderpad=1, fancybox=True)
+plt.legend(
+    loc="upper right",
+    fontsize=10,
+    frameon=True,
+    shadow=True,
+    borderpad=1,
+    fancybox=True,
+)
 
-plt.fill_between(range(len(trained_model.history['loss'][15:])), 
-                 trained_model.history['loss'][15:], 
-                 trained_model.history['val_loss'][15:], 
-               trained_model.history['val_loss'][15:], 
-                 color='gray', alpha=0.2, label='Loss Difference')
+plt.fill_between(
+    range(len(trained_model.history["loss"][15:])),
+    trained_model.history["loss"][15:],
+    trained_model.history["val_loss"][15:],
+    trained_model.history["val_loss"][15:],
+    color="gray",
+    alpha=0.2,
+    label="Loss Difference",
+)
 
-min_val_loss_epoch = np.argmin(trained_model.history['val_loss'])
-plt.annotate(f'Min Val Loss: {trained_model.history["val_loss"][min_val_loss_epoch]:.4f}',
-             xy=(min_val_loss_epoch, trained_model.history['val_loss'][min_val_loss_epoch]),
-             xytext=(min_val_loss_epoch, trained_model.history['val_loss'][min_val_loss_epoch] + 0.1),
-             arrowprops=dict(facecolor='black', arrowstyle='->'),
-             fontsize=10, color='darkred')
+min_val_loss_epoch = np.argmin(trained_model.history["val_loss"])
+plt.annotate(
+    f'Min Val Loss: {trained_model.history["val_loss"][min_val_loss_epoch]:.4f}',
+    xy=(min_val_loss_epoch, trained_model.history["val_loss"][min_val_loss_epoch]),
+    xytext=(
+        min_val_loss_epoch,
+        trained_model.history["val_loss"][min_val_loss_epoch] + 0.1,
+    ),
+    arrowprops=dict(facecolor="black", arrowstyle="->"),
+    fontsize=10,
+    color="darkred",
+)
 
 plt.tight_layout()
 plt.show()
