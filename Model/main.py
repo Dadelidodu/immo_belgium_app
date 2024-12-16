@@ -37,7 +37,7 @@ start_time = time.time()
 trained_model = train_model(model, X_train, y_train, X_test, y_test)
 end_time = time.time()
 training_time = end_time - start_time
-model.save("data/trained_model.h5")
+model.save("Model/data/trained_model.h5")
 
 # Evaluate the model
 train_loss, train_mae = model.evaluate(X_train, y_train, verbose=0)
