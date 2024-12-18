@@ -129,7 +129,7 @@ with st.sidebar:
 
         # Predict using the trained model
         predicted_price = trained_model.predict(final_features)[0]
-        predicted_price_value = predicted_price.item()
+        predicted_price_value = round(predicted_price.item(), -4)
 
         # Display the prediction
 
