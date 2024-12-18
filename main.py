@@ -9,7 +9,7 @@ from tensorflow.keras.utils import get_custom_objects
 
 st.set_page_config(page_title="Immo Belgium App", page_icon="🏠", layout="wide")
 st.markdown(
-    "<h1 style='text-align: center;'>Immo Belgium App</h1>", unsafe_allow_html=True
+    "<h1 style='text-align: center;'>🏛️ Immo Belgium App 🏛️</h1>", unsafe_allow_html=True
 )
 
 # Load the datasets using the cached function
@@ -22,32 +22,37 @@ X_train, X_test, y_train, y_test = load_train_test()
 
 with st.sidebar:
 
+    # Title
+
+    st.markdown(
+    "<h1 style='text-align: center;'>Price Prediction Tool</h1>", unsafe_allow_html=True
+)
     # User inputs
 
     zip_code = st.sidebar.selectbox(
-        "Select Zip Code",
+        "🗺️ Select Zip Code",
         options=X_train["Zip Code"].sort_values(ascending=True).unique(),
     )
     prop_type = st.sidebar.selectbox(
-        "Select Type of Property", options=X_train["Subtype of Property"].unique()
+        "🏠 Select Type of Property", options=X_train["Subtype of Property"].unique()
     )
     livable_space_score = st.sidebar.number_input(
-        "Enter Livable Space (m2)", min_value=0, step=10
+        "📐 Enter Livable Space (m2)", min_value=0, step=10
     )
     land_surface_score = st.sidebar.number_input(
-        "Enter Surface of the Land (m2)", min_value=0, step=10
+        "🌳 Enter Surface of the Land (m2)", min_value=0, step=10
     )
     energy_consumption_score = st.sidebar.number_input(
-        "Enter Primary Energy Consumption (kWh/m2)", min_value=0, step=10
+        "⚡ Enter Primary Energy Consumption (kWh/m2)", min_value=0, step=10
     )
     construction_year_score = st.sidebar.number_input(
-        "Enter Construction Year", min_value=1750, step=10
+        "📅 Enter Construction Year", min_value=1750, step=10
     )
     facades_score = st.sidebar.number_input(
-        "Enter Number of Facades", min_value=0, step=1, max_value=4
+        "🏠 Enter Number of Facades", min_value=0, step=1, max_value=4
     )
     rooms_score = st.sidebar.number_input(
-        "Enter Number of Rooms", min_value=0, step=1, max_value=20
+        "🛏️ Enter Number of Rooms", min_value=0, step=1, max_value=20
     )
     building_states = [
         "As new",
@@ -58,14 +63,14 @@ with st.sidebar:
         "To restore",
     ]
     building_state_index = st.sidebar.selectbox(
-        "Select State of the Building",
+        "🛠️ Select State of the Building",
         options=range(len(building_states)),
         format_func=lambda x: building_states[x],
     )
     building_score = building_state_index
     PEB_rankings = ["A", "B", "C", "D", "E", "F", "G"]
     PEB_index = st.sidebar.selectbox(
-        "Select PEB",
+        "📝 Select PEB",
         options=range(len(PEB_rankings)),
         format_func=lambda x: PEB_rankings[x],
     )
